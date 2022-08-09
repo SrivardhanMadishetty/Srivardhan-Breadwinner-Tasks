@@ -1,0 +1,17 @@
+public class ListOfAllInvoicesController
+{
+	public list<Invoice__c> AllInvoices {get;set;}
+    public Invoice__c selectedInvoice {get;set;}
+    
+    public  ListOfAllInvoicesController()
+    {
+        AllInvoices = [Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  from Invoice__c ];
+	}
+    public PageReference ViewPage()
+  	{
+      selectedInvoice=[select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  from Invoice__c limit 1];
+      PageReference retPage = new PageReference('/apex/ViewInvoicePage');
+         retPage.setRedirect(true);
+         return retPage;
+    }
+}
