@@ -1,0 +1,32 @@
+<apex:page controller="ListOfAllInvoicesController">
+ <!--   <script>
+    function selected(invoiceid)
+        {   
+            Redirect(invoiceid);
+        }       
+    </script> -->
+        <apex:pageBlock title="List Of All Invoices">
+            <apex:PageblockTable value="{!AllInvoices}" var="i">
+                
+                <apex:column headerValue="Invoice Number" >                               
+                    <apex:outputLink value="/{!i.id}" target="_blank"> {!i.Name} </apex:outputLink>
+                </apex:column>
+                
+                <apex:column value="{!i.Status__c}" headerValue="Status" />
+                <apex:column value="{!i.Account__c}" headerValue="Account" />
+                <apex:column value="{!i.Due_Date__c}" headerValue="Due Date" />
+                <apex:column value="{!i.Days_Overdue__c}" headerValue="Days Overdue" />
+                <apex:column value="{!i.Invoice_Date__c}" headerValue="Invoice Date" />
+                <apex:column value="{!i.Total__c}" headerValue="Total" />
+                <apex:column value="{!i.Amount_Paid__c}" headerValue="Amount Paid" />
+                <apex:column value="{!i.Amount_Due__c}" headerValue="Amount Due" />
+                         
+            </apex:PageblockTable>
+            
+           <!-- <apex:actionFunction action="{!ViewPage}" name="Redirect">
+				<apex:param assignTo="{!SelectedInvoiceId}" value="" name="inpval"/>
+			</apex:actionFunction> -->
+            
+        </apex:pageBlock>
+    
+</apex:page>
