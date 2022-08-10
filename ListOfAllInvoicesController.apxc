@@ -30,7 +30,7 @@ Public class ListOfAllInvoicesController
     }
     Public pageReference viewPage() 
     {
-        String recordid=apexpages.currentpage().getparameters().get('pagee');
+        String recordid=apexpages.currentpage().getparameters().get('id');
         invdata=[Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:recordid];
         return page.ViewInvoicePage;
     }
