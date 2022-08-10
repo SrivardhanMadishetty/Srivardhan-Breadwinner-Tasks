@@ -60,7 +60,7 @@
                 <apex:PageblockTable value="{!AllInvoices}" var="i" >
                     <apex:column headerValue="Invoice Number" headerClass="row">    
                         <apex:commandLink value="{!i.Name}" action="{!viewPage}" >
-                            <apex:param name="pagee" value="{!i.id}"/>
+                            <apex:param name="id" value="{!i.id}"/>
                         </apex:commandLink>
                     </apex:column>
                     
