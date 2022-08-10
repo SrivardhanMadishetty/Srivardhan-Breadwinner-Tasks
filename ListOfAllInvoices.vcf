@@ -1,32 +1,81 @@
-<apex:page controller="ListOfAllInvoicesController">
- <!--   <script>
-    function selected(invoiceid)
-        {   
-            Redirect(invoiceid);
-        }       
-    </script> -->
-        <apex:pageBlock title="List Of All Invoices">
-            <apex:PageblockTable value="{!AllInvoices}" var="i">
+<apex:page standardController="Invoice__c" extensions="ListofallInvoicesController" docType="html-5.0" lightningStylesheets="true" >
+    
+    <style type="text/css">
+        
+        .headerRow .row
+        {
+        text-transform:initial;
+        font-size:14px;
+        color:Navy;
+        }
+        .custPopup{
+        background-color: white;
+        border-width: 2px;
+        border-style: solid;
+        z-index: 9999;
+        left: 50%;
+        padding:10px;
+        position: absolute;
+        width: 500px;
+        margin-left: -250px;
+        top:100px;
+        }
+        .popupBackground{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 9998;
+        }
+        
+    </style>
+    
+    <apex:form id="formId">  
+        
+        <apex:outputPanel id="tstpopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">     
+               Total: <apex:inputField value="{!newinv.Total__c}"/><br/>
+               Status: <apex:inputField value="{!Invoice__c.Status__c}"/><br/>
+               Due_Date: <apex:inputField value="{!newinv.Due_Date__c}"/><br/>
+                Days_Overdue:<apex:inputField value="{!newinv.Days_Overdue__c}"/><br/>
+                Invoice_Date:<apex:inputField value="{!newinv.Invoice_Date__c}"/><br/>
+                Amount_Paid:<apex:inputField value="{!newinv.Amount_Paid__c}"/><br/>
+               Amount_Due: <apex:inputField value="{!newinv.Amount_Due__c}"/><br/> 
+                <apex:commandButton value="Save" action="{!saveInvoice}" rerender="formId,tstpopup"/>
+                <apex:commandButton value="Close" action="{!closePopup}" rerender="tstpopup"/>
                 
-                <apex:column headerValue="Invoice Number" >                               
-                    <apex:outputLink value="/{!i.id}" target="_blank"> {!i.Name} </apex:outputLink>
-                </apex:column>
-                
-                <apex:column value="{!i.Status__c}" headerValue="Status" />
-                <apex:column value="{!i.Account__c}" headerValue="Account" />
-                <apex:column value="{!i.Due_Date__c}" headerValue="Due Date" />
-                <apex:column value="{!i.Days_Overdue__c}" headerValue="Days Overdue" />
-                <apex:column value="{!i.Invoice_Date__c}" headerValue="Invoice Date" />
-                <apex:column value="{!i.Total__c}" headerValue="Total" />
-                <apex:column value="{!i.Amount_Paid__c}" headerValue="Amount Paid" />
-                <apex:column value="{!i.Amount_Due__c}" headerValue="Amount Due" />
-                         
-            </apex:PageblockTable>
-            
-           <!-- <apex:actionFunction action="{!ViewPage}" name="Redirect">
-				<apex:param assignTo="{!SelectedInvoiceId}" value="" name="inpval"/>
-			</apex:actionFunction> -->
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:pageBlock>
+            <apex:pageBlockButtons>
+                	<apex:commandButton value="New" action="{!showPopup}" rerender="tstpopup" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="All Invoices" columns="1">     
+                <apex:PageblockTable value="{!AllInvoices}" var="i" >
+                    <apex:column headerValue="Invoice Number" headerClass="row">    
+                        <apex:commandLink value="{!i.Name}" action="{!viewPage}" >
+                            <apex:param name="pagee" value="{!i.id}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    
+                    <apex:column value="{!i.Status__c}" headerValue="Status" headerClass="row" />
+                    <apex:column value="{!i.Account__c}" headerValue="Account" headerClass="row"/>
+                    <apex:column value="{!i.Due_Date__c}" headerValue="Due Date" headerClass="row"/>
+                    <apex:column value="{!i.Days_Overdue__c}" headerValue="Days Overdue" headerClass="row"/>
+                    <apex:column value="{!i.Invoice_Date__c}" headerValue="Invoice Date" headerClass="row"/>
+                    <apex:column value="{!i.Total__c}" headerValue="Total" headerClass="row"/>
+                    <apex:column value="{!i.Amount_Paid__c}" headerValue="Amount Paid" headerClass="row"/>
+                    <apex:column value="{!i.Amount_Due__c}" headerValue="Amount Due" headerClass="row"/>
+                    
+                </apex:PageblockTable>               
+            </apex:pageBlockSection>
             
         </apex:pageBlock>
-    
+    </apex:form>    
 </apex:page>
