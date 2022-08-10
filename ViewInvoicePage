@@ -1,0 +1,15 @@
+<apex:page standardController="Invoice__c" extensions="ListOfAllInvoicesController" docType="html-5.0" lightningStylesheets="true">
+    <apex:pageblock >
+        <apex:pageBlockSection title="Invoice Details">
+            <apex:outputField label="Invoice Number" value="{!invdata.Name}"/>
+            <apex:outputField label="Account" value="{!invdata.Account__r.Name}"/>
+            <apex:outputField label="Days Overdue" value="{!invdata.Days_Overdue__c}"/>
+            <apex:outputField label="Due Date" value="{!invdata.Due_Date__c}"/>
+            <apex:outputField label="Invoice Date" value="{!invdata.Invoice_Date__c}"/>
+            <apex:outputField label="Amount Paid" value="{!invdata.Amount_Paid__c}"/>
+            <apex:outputField label="Amount Due" value="{!invdata.Amount_Due__c}"/>
+            <apex:outputField label="Status" value="{!invdata.Status__c}"/>
+            <apex:outputField label="Total" value="{!invdata.Total__c}"/>
+        </apex:pageBlockSection>
+    </apex:pageblock>
+</apex:page>
