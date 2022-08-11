@@ -2,15 +2,15 @@ Public class ListOfAllInvoicesController
 {
 	Public List<Invoice__c> allInvoices {get;set;}
     Public Invoice__c selectedInvoice {get;set;}
-    Public Invoice__c newinv {get;set;} 
     public Invoice__c invdata {get;set;}
     Public String invid {get;set;}
-    Public Boolean displayPopup {get; set;}  
+    Public Boolean displayPopup {get; set;} 
+    public String editselectedId {get; set;}
+    public String deleteselectedId {get; set;}
+    Public Invoice__c newinv {get;set;}  
     
     Public  ListOfAllInvoicesController(ApexPages.StandardController controller)
-    {
-        
-        newinv = New Invoice__c();
+    {    
         allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];
 	}
     
@@ -20,17 +20,31 @@ Public class ListOfAllInvoicesController
     }     
     Public void showPopup()
     {        
-        displayPopup = true;    
+        displayPopup = true;  
+        newinv = New Invoice__c();
     }
     Public void saveInvoice()
     {  
        displayPopup = false;
-       INSERT  newinv ; 
-       allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];
+       UPSERT newinv ; 
+       allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];       
+    }
+    Public void editInvoice()
+    {
+       newinv = New Invoice__c();
+       newinv = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:editselectedId];
+       displayPopup = true;
+    }
+    Public void deleteInvoice()
+    {
+        newinv = New Invoice__c();
+        newinv = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:deleteselectedId];
+        DELETE newinv;
+        allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];
     }
     Public pageReference viewPage() 
     {
-        String recordid=apexpages.currentpage().getparameters().get('id');
+        String recordid=Apexpages.Currentpage().getParameters().get('id');
         invdata=[Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:recordid];
         return page.ViewInvoicePage;
     }
