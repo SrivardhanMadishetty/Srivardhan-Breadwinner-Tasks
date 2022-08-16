@@ -11,7 +11,7 @@ Public class ListOfAllInvoicesController
     
     Public  ListOfAllInvoicesController(ApexPages.StandardController controller)
     {    
-        allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];
+        allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name];
 	}
     
     Public void closePopup()
@@ -27,7 +27,7 @@ Public class ListOfAllInvoicesController
     {  
        displayPopup = false;
        UPSERT newinv ; 
-       allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];       
+       allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name];       
     }
     Public void editInvoice()
     {
@@ -40,13 +40,17 @@ Public class ListOfAllInvoicesController
         newinv = New Invoice__c();
         newinv = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:deleteselectedId];
         DELETE newinv;
-        allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ];
+        allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name ];
     }
     Public pageReference viewPage() 
     {
         String recordid=Apexpages.Currentpage().getParameters().get('id');
         invdata=[Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:recordid];
         return page.ViewInvoicePage;
+    }
+    Public pageReference InvoiceListView() 
+    {
+        return page.ListOfAllInvoices;
     }
     
 }
