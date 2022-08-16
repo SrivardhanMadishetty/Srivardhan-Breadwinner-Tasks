@@ -1,4 +1,5 @@
 <apex:page standardController="Invoice__c" extensions="ListOfAllInvoicesController" docType="html-5.0" lightningStylesheets="true">
+    <apex:form >
     <apex:pageblock >
         <apex:pageBlockSection title="Invoice Details">
             <apex:outputField label="Invoice Number" value="{!invdata.Name}"/>
@@ -11,5 +12,9 @@
             <apex:outputField label="Status" value="{!invdata.Status__c}"/>
             <apex:outputField label="Total" value="{!invdata.Total__c}"/>
         </apex:pageBlockSection>
+       <apex:pageBlockButtons location="bottom">
+              <apex:commandButton value="Cancel" action="{!InvoiceListView}"/>
+       </apex:pageBlockButtons>
     </apex:pageblock>
+    </apex:form>  
 </apex:page>
