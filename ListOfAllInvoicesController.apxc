@@ -8,7 +8,10 @@ Public class ListOfAllInvoicesController
     public String editselectedId {get; set;}
     public String deleteselectedId {get; set;}
     Public Invoice__c newinv {get;set;}  
-    
+    String str {get;set;}
+    boolean boolst=true;
+   
+
     Public  ListOfAllInvoicesController(ApexPages.StandardController controller)
     {    
         allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name];
@@ -52,5 +55,20 @@ Public class ListOfAllInvoicesController
     {
         return page.ListOfAllInvoices;
     }
+    Public void descSort()
+    {        
+        if(boolst==true)
+        {
+            String query = 'Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name DESC';
+            allInvoices = database.query(query);            
+            boolst=false;
+		}
+        else
+        {
+            allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name ASC];
+            boolst=true;
+		}
+        
+	}
     
 }
