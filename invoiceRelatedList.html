@@ -1,0 +1,34 @@
+<template>
+
+    <lightning-card >
+        <lightning-accordion>
+            <lightning-accordion-section label="Summary Information">
+              <b>Paid:</b>  {totalPaidInvoices.data} </br>
+              <b>Current Due:</b>  {totalDueInvoices.data} </br>
+              <b>Overdue:</b></br>
+               <!-- Overdue : </br>
+                          1-30        : {totoverDueInvoices} </br>
+                          31-60       : {totoverDueInvoices} </br>
+                         61-90        : {totoverDueInvoices} </br>
+                            90+       : {totoverDueInvoices} </br>
+                  Total OverDue       : {totoverDueInvoices} </br> -->
+         
+                <b>Total Receivables:</b> {sumOfReceivables.data} 
+            </lightning-accordion-section>
+        </lightning-accordion>
+    </lightning-card>
+
+    <lightning-card>
+        <lightning-accordion>
+            <lightning-accordion-section label="Invoices">
+                <lightning-datatable 
+                    key-field="id" 
+                    data={invdata} 
+                    columns={columns}>
+                </lightning-datatable>
+            </lightning-accordion-section>
+        </lightning-accordion>
+        
+    </lightning-card>
+
+</template>
