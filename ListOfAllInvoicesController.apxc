@@ -113,7 +113,7 @@ Public class ListOfAllInvoicesController
         {
             system.debug('Hi');
             system.debug(colSortField);
-            String query = 'Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name DESC';      
+            String query = 'Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY ' +colSortField+ ' DESC';      
             allInvoices = database.query(query);    
             
             boolst=false;
