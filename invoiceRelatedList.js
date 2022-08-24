@@ -4,6 +4,7 @@ import paidInvoices from '@salesforce/apex/ListOfAllInvoicesController.paidInvoi
 import CurrentDueInvoices from '@salesforce/apex/ListOfAllInvoicesController.CurrentDueInvoices';
 import OverdueInvoices from '@salesforce/apex/ListOfAllInvoicesController.OverdueInvoices';
 import TotalReceivables from '@salesforce/apex/ListOfAllInvoicesController.TotalReceivables';
+import Red from '@salesforce/resourceUrl/Red';
 export default class InvoiceSummary extends LightningElement {
     @api recordId;
     @api allInvoices;
@@ -11,7 +12,7 @@ export default class InvoiceSummary extends LightningElement {
     invdata=[];
 
    
-    @track columns = [
+    columns = [
         {
         label: 'Invoice#',
         fieldName: 'invName',
@@ -20,8 +21,8 @@ export default class InvoiceSummary extends LightningElement {
     },
     {
         label: 'Status',
-        fieldName: 'Status__c',
-        type: 'image',
+        fieldName: '',
+        cellAttributes: { iconName: { fieldName: 'Status__c' }, class: { fieldName: 'variant' }},
     },
     {
         label: 'Inoice Date',
@@ -65,10 +66,27 @@ wiredInvoices({ error, data })
         let tempinvList = []; 
         
         data.forEach((record) => {
+
             let tempInvRec = Object.assign({}, record);  
             tempInvRec.invName = '/' + tempInvRec.Id;
-            tempinvList.push(tempInvRec);
-            
+            tempinvList.push(tempInvRec); 
+   
+            if(tempInvRec.Status__c.includes("Paid"))
+            {
+                tempInvRec.Status__c='action:priority';
+                tempInvRec.variant='slds-icon-text-success';
+            }
+            else if(tempInvRec.Status__c.includes("Overdue"))
+            {
+                tempInvRec.Status__c='action:priority';
+                tempInvRec.variant='slds-icon-text-error';
+            }
+            else
+            {
+                tempInvRec.Status__c='action:priority';
+                tempInvRec.variant='slds-icon-text-warning';
+            }
+
         });
         
         this.invdata = tempinvList;
