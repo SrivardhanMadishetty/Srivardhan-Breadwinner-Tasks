@@ -1,3 +1,29 @@
+.csize{
+    border: 5px solid rgba(94, 136, 175, 0.212);
+    width:100%;
+}
+.tsize{
+    
+    font-size: 50px;
+    color: rgb(10, 204, 52);
+}
+.tdsize{
+    
+    font-size: 50px;
+    color: rgb(194, 181, 6);
+}
+.tasize{
+    
+    font-size: 50px;
+    color: rgb(15, 91, 190);
+}
+.hSIze{
+    font-size: 20px; 
+}
+.tosize{
+    font-size: 15px; 
+}
 :host{
     --slds-c-icon-color-background:#ffffff;
     }
+    
