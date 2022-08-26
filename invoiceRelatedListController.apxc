@@ -1,0 +1,102 @@
+Public class invoiceRelatedListController
+{	
+    Public Static List<Invoice__c> AccountInvoices {get;set;}     
+    Public static Integer totalPaidInvoices {get;set;}
+    Public static Integer totalDueInvoices {get;set;}
+    Public static Integer totalOverDueInvoices {get;set;}
+    Public static List<AggregateResult> sumOfReceivables {get;set;}
+  
+    @AuraEnabled(cacheable=true)
+    public static List<Invoice__c> getAllInvoices(String AccountId) {
+        AccountInvoices=[Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  from Invoice__c where Account__c=:AccountId];
+        return AccountInvoices;
+    }
+    @AuraEnabled(cacheable=true)
+    public static Integer paidInvoices(String AccountId) {
+        totalPaidInvoices=[Select count() from Invoice__c where status__c='Paid' AND Account__c=:AccountId];
+        return totalPaidInvoices;
+    }
+    @AuraEnabled(cacheable=true)
+    public static Integer CurrentDueInvoices(String AccountId) {
+        totalDueInvoices=[Select count() from Invoice__c where status__c='Due' AND Account__c=:AccountId];
+        return totalDueInvoices;
+    }
+    @AuraEnabled(cacheable=true)
+    public static Integer totalOverdueInvoices(String AccountId) {     
+        totalOverDueInvoices=[select count() from Invoice__c where status__c='OverDue' AND Account__c=:AccountId];
+        return totalOverDueInvoices;
+    }
+    @AuraEnabled(cacheable=true)
+    public static Integer TotalReceivables(String AccountId) {
+        sumOfReceivables=[Select sum(Amount_Due__c) sum from Invoice__c where Account__c=:AccountId];
+        Integer sumAmount;
+        if(sumOfReceivables.size()>0 )
+        {
+                 if(Integer.valueOf(sumOfReceivables[0].get('sum'))!=null)
+                 {
+                     sumAmount=Integer.valueOf(sumOfReceivables[0].get('sum'));
+                 }
+        }
+        else
+        {
+            sumAmount=0;
+		}
+        return sumAmount;
+    }
+     @AuraEnabled(cacheable=true)
+    public static List<DataSet> getAllOverdueInvoices(String AccountId)
+    {
+        List<Invoice__c> result = [Select Days_Overdue__c from Invoice__c where status__c = 'Overdue' AND Account__c=:AccountId ];
+        List<DataSet> dataSet = new List<DataSet>();       
+        
+        Integer total1to30 = 0, total31to60 = 0,total61to90 = 0,total90 = 0;       
+        String status1to30 = '1 - 30', status31to60 = '31 - 60', status61to90 = '61 - 90', status90 = '90+';
+        
+        for(Invoice__c ar:result)
+        {
+            if(ar.Days_Overdue__c>=1 && ar.Days_Overdue__c<=30)
+            {
+                total1to30  = total1to30 + 1;                        
+			}
+            if(ar.Days_Overdue__c>=31 && ar.Days_Overdue__c<=60)
+            {
+                total31to60  = total31to60 + 1;                            
+			}
+            if(ar.Days_Overdue__c>=61 && ar.Days_Overdue__c<=90)
+            {
+                total61to90  = total61to90 + 1;                           
+			}
+            if(ar.Days_Overdue__c>=90)
+            {
+                total90  = total90 + 1;             
+			}                        
+        }
+        
+        Integer totalOverdueInvoices = total1to30 + total31to60 + total61to90 + total90 ;
+       // String  totalOverdueCount  =  String.valueOf(totalOverdue);
+          
+        system.debug('totalOverdueInvoices' + totalOverdueInvoices);
+        
+        dataSet.add(new DataSet(status1to30 ,total1to30));
+        dataSet.add(new DataSet(status31to60 ,total31to60));
+        dataSet.add(new DataSet(status61to90 ,total61to90));
+        dataSet.add(new DataSet(status90 ,total90));
+       
+        
+        
+        System.debug('dataSet'+dataSet);
+        return dataSet ;
+    }
+    public class DataSet
+    {
+        public DataSet(String label ,Integer count)
+        {
+            this.label  = label ;
+            this.count = count ;
+        }
+        @AuraEnabled
+        public String label {get;set;}
+        @AuraEnabled
+        public Integer  count {get;set;}
+    }
+}
