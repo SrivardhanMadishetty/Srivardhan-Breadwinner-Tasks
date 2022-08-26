@@ -1,37 +1,28 @@
 Public class ListOfAllInvoicesController
 {
-	Public List<Invoice__c> allInvoices {get;set;}
-    Public Static List<Invoice__c> AccountInvoices {get;set;}
-    Public Invoice__c selectedInvoice {get;set;}
-    public Invoice__c invdata {get;set;}
-    Public String invid {get;set;}
-    Public Boolean displayPopup {get; set;} 
+	Public List<Invoice__c> allInvoices {get;set;}   
+    public Invoice__c invdata {get;set;} 
+    Public Invoice__c newinv {get;set;}
+    public String recordid {get;set;}
     public String editselectedId {get; set;}
     public String deleteselectedId {get; set;}
-    Public Invoice__c newinv {get;set;}
+   // Public String colSortField {get;set;}
+    Public Boolean displayPopup {get; set;}
+    Public Boolean boolst=true;
     Public Boolean arrowdown {get; set;}
     Public Boolean arrowup {get; set;}
-    Public String colSortField {get;set;}
-    Public static Integer totalPaidInvoices {get;set;}
-    Public static Integer totalDueInvoices {get;set;}
-    Public static List<Invoice__c> totalOverDueInvoices {get;set;}
-    Public static List<AggregateResult> sumOfReceivables {get;set;}
-    String str {get;set;}
-    boolean boolst=true;
-   
 
     Public  ListOfAllInvoicesController(ApexPages.StandardController controller)
     {    
         allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name]; 
         arrowup=true;
         arrowdown=false;       
-	}
-    
+	}     
     Public void closePopup()
     {        
         displayPopup = false;    
     }     
-    Public void showPopup()
+    Public void showPopup() 
     {        
         displayPopup = true;  
         newinv = New Invoice__c();
@@ -44,21 +35,18 @@ Public class ListOfAllInvoicesController
     }
     Public void editInvoice()
     {
+       
        newinv = New Invoice__c();
        newinv = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:editselectedId];
        displayPopup = true;
     }
     Public void deleteInvoice()
     {
-        newinv = New Invoice__c();
-        
+                
         Invoice__c delInvoice = new Invoice__c(Id = deleteselectedId);
-		Delete delInvoice;
-        
-       // newinv = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c WHERE id=:deleteselectedId];
-       // DELETE newinv;
+		Delete delInvoice;       
         allInvoices = [SELECT id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name ];
-    }
+    } 
     Public pageReference viewPage() 
     {
         String recordid=Apexpages.Currentpage().getParameters().get('id');
@@ -67,55 +55,16 @@ Public class ListOfAllInvoicesController
     }
     Public pageReference InvoiceListView() 
     {
-        return page.ListOfAllInvoices;
+        return page.ListOfAllInvoices; 
     }
-    @AuraEnabled(cacheable=true)
-    public static List<Invoice__c> getAllInvoices(String AccountId) {
-        AccountInvoices=[Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  from Invoice__c where Account__c=:AccountId];
-        System.debug('AccountInvoices== '+AccountInvoices);
-        return AccountInvoices;
-    }
-    @AuraEnabled(cacheable=true)
-    public static Integer paidInvoices(String AccountId) {
-        totalPaidInvoices=[Select count() from Invoice__c where status__c='Paid' AND Account__c=:AccountId];
-        System.debug('totalPaidInvoices== '+totalPaidInvoices);
-        return totalPaidInvoices;
-    }
-    @AuraEnabled(cacheable=true)
-    public static Integer CurrentDueInvoices(String AccountId) {
-        totalDueInvoices=[Select count() from Invoice__c where status__c='Due' AND Account__c=:AccountId];
-        System.debug('totalDueInvoices== '+totalDueInvoices);
-        return totalDueInvoices;
-    }
-    @AuraEnabled(cacheable=true)
-    public static List<Invoice__c> OverdueInvoices(String AccountId) {     
-        totalOverDueInvoices=[select Days_OverDue__c from Invoice__c where status__c='OverDue' AND Account__c=:AccountId];
-        System.debug('totalOverDueInvoices== '+totalOverDueInvoices);
-        return totalOverDueInvoices;
-    }
-    @AuraEnabled(cacheable=true)
-    public static Integer TotalReceivables(String AccountId) {
-        sumOfReceivables=[Select sum(Amount_Due__c) sum from Invoice__c where Account__c=:AccountId];
-        Integer sumAmount;
-        if(sumOfReceivables.size()>0 )
-        {
-                 if(Integer.valueOf(sumOfReceivables[0].get('sum'))!=null)
-                 {
-                     sumAmount=Integer.valueOf(sumOfReceivables[0].get('sum'));
-                 }
-        }    
-        return sumAmount;
-    }
-    
     Public void tableSort()
     {        
         if(boolst==true)
         {
             system.debug('Hi');
-            system.debug(colSortField);
-            String query = 'Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY ' +colSortField+ ' DESC';      
+            // system.debug(colSortField);
+            String query = 'Select id,Name,Account__r.Name, Days_Overdue__c, Due_Date__c, Invoice_Date__c, Amount_Paid__c, Amount_Due__c, Status__c,Total__c  FROM Invoice__c ORDER BY Name DESC';      
             allInvoices = database.query(query);    
-            
             boolst=false;
             arrowdown=true;
             arrowup=false;
@@ -126,8 +75,6 @@ Public class ListOfAllInvoicesController
             boolst=true;
             arrowup=true;
             arrowdown=false;
-		}
-        
-	}
-    
+		}       
+	}    
 }
