@@ -42,7 +42,7 @@
         
     </style>
     <html xmlns:xlink="http://www.w3.org/2000/svg">
-        <apex:form>
+        <apex:form >
             
             <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
             <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">   
@@ -70,7 +70,7 @@
                     <apex:param name="colSortField" assignTo="{!colSortField}" value=""/>
                 </apex:actionFunction>
                 
-                <apex:outputPanel>
+                <apex:outputPanel >
                     <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid" aria-label="Invoice Example" >
                         <thead>
                             <tr class="slds-line-height_reset">
