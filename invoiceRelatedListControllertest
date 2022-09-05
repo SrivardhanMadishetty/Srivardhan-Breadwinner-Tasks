@@ -1,0 +1,57 @@
+@istest
+public class invoiceRelatedListControllertest
+{
+	@istest
+    public static void test()
+    {       
+        Account acc=new Account(Name = 'vardhan');
+        INSERT acc;
+        
+        Invoice__c newinv = New Invoice__c();
+        
+        newinv.Account__c = acc.Id;
+        newinv.Amount_Paid__c=100.00;
+        newinv.Total__c=1000.00; 
+
+        INSERT newinv;
+        
+        Invoice__c testInvoice2 = new Invoice__c();
+        testInvoice2.Account__c=acc.id;
+        testInvoice2.Amount_Paid__c=99;
+        testInvoice2.Due_Date__c=system.today()-20;
+        testInvoice2.Invoice_Date__c=system.today();
+        testInvoice2.Total__c=100;
+        Insert testInvoice2;
+        
+        Invoice__c testInvoice3 = new Invoice__c();
+        testInvoice3.Account__c=acc.id;
+        testInvoice3.Amount_Paid__c=99;
+        testInvoice3.Due_Date__c=system.today()-40;
+        testInvoice3.Invoice_Date__c=system.today();
+        testInvoice3.Total__c=100;
+        Insert testInvoice3;
+        
+        Invoice__c testInvoice4 = new Invoice__c();
+        testInvoice4.Account__c=acc.id;
+        testInvoice4.Amount_Paid__c=99;
+        testInvoice4.Due_Date__c=system.today()-80;
+        testInvoice4.Invoice_Date__c=system.today();
+        testInvoice4.Total__c=100;
+        Insert testInvoice4;
+        
+        Invoice__c testInvoice5 = new Invoice__c();
+        testInvoice5.Account__c=acc.id;
+        testInvoice5.Amount_Paid__c=99;
+        testInvoice5.Due_Date__c=system.today()-100;
+        testInvoice5.Invoice_Date__c=system.today();
+        testInvoice5.Total__c=100;
+        Insert testInvoice5;
+        
+        test.startTest();
+
+        invoiceRelatedListController.getAllInvoices(acc.id);
+        invoiceRelatedListController.getAllOverdueInvoices(acc.id);
+        
+        test.stopTest();
+	}
+}
