@@ -1,25 +1,20 @@
 import { LightningElement,api,track,wire } from 'lwc';
-
-import chartjs from '@salesforce/resourceUrl/ChartJs'; 
+import chartjs from '@salesforce/resourceUrl/chartjs'; 
 import { loadScript } from 'lightning/platformResourceLoader';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
 import getAllOverdueInvoices from '@salesforce/apex/invoiceRelatedListController.getAllOverdueInvoices';
-
 import getAllInvoices from '@salesforce/apex/invoiceRelatedListController.getAllInvoices';
-
-import paidInvoices from '@salesforce/apex/invoiceRelatedListController.paidInvoices';
-import CurrentDueInvoices from '@salesforce/apex/invoiceRelatedListController.CurrentDueInvoices';
-import totalOverdueInvoices from '@salesforce/apex/invoiceRelatedListController.totalOverdueInvoices';
-import TotalReceivables from '@salesforce/apex/invoiceRelatedListController.TotalReceivables';
 
 export default class InvoiceSummary extends LightningElement {
     @api recordId;
     @api allInvoices;
     @api overDueInvoices;
     invdata=[];
-
-   
+    totalPaidInvoices = 0;
+    totalDueInvoices = 0;
+    totalOverdueInvoices = 0;
+    sumOfReceivables = 0;
+    
     columns = [
         {
         label: 'Invoice#',
@@ -71,6 +66,7 @@ wiredInvoices({ error, data })
 {
     if (data) 
     {
+        
         let tempinvList = []; 
         
         data.forEach((record) => {
@@ -83,51 +79,39 @@ wiredInvoices({ error, data })
             {
                 tempInvRec.Status__c='action:priority';
                 tempInvRec.variant='slds-icon-text-success';
+                this.totalPaidInvoices = this.totalPaidInvoices + 1;
             }
             else if(tempInvRec.Status__c.includes("Overdue"))
             {
                 tempInvRec.Status__c='action:priority';
                 tempInvRec.variant='slds-icon-text-error';
+                this.totalOverdueInvoices = this.totalOverdueInvoices + 1;
             }
             else
             {
                 tempInvRec.Status__c='action:priority';
                 tempInvRec.variant='slds-icon-text-warning';
+                this.totalDueInvoices = this.totalDueInvoices + 1;
             }
 
+            this.sumOfReceivables = this.sumOfReceivables + tempInvRec.Amount_Due__c;
         });
         
         this.invdata = tempinvList;
         
         this.error = undefined;
         console.log('invdata'+this.invdata);
-
     } 
     else if (error) {
         this.error = result.error;
     }
 }
 
-
-@wire(paidInvoices,  { AccountId:'$recordId' }) totalPaidInvoices;
-
-@wire(CurrentDueInvoices,  { AccountId:'$recordId' }) totalDueInvoices;
-
-@wire(TotalReceivables,  { AccountId:'$recordId' }) sumOfReceivables;
-
-@wire(totalOverdueInvoices,  { AccountId:'$recordId' }) totalOverdueInvoices;
-
-obj=[];
-totalcountOverdue = 0;
-
 @wire (getAllOverdueInvoices, { AccountId:'$recordId' }) 
 accounts({error,data})
 {
    if(data)
-   {
-      this.obj =data;
-      this.totalcountOverdue = this.obj.length;
-      
+   {   
       for(var key in data)
        {
           this.updateChart(data[key].count,data[key].label);
